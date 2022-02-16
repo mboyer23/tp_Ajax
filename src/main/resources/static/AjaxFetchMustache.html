@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Ajax avec l'API fetch et Mustache</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+
+    <!-- On charge le moteur de template mustache https://mustache.github.io/ -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
+
+    <script>
+        // Fonction qui affiche les résultats de la requête
+        function showResult(resultJson) {
+            // Le code source du template est dans la page
+            var template = document.getElementById("countriesTemplate").innerHTML;
+            // On combine le template avec le résultat de la requête
+            var generatedHtml = Mustache.render(template, resultJson._embedded);
+            // On affiche le résultat dans la page
+            document.getElementById("tableCountries").innerHTML = generatedHtml;
+        }
+
+        // Fonction qui traite les erreurs de la requête
+        function showError(error) {
+            document.getElementById("tableCountries").innerHTML = "Erreur: " + error;
+        }
+
+        // Fonction qui fait l'appel AJAX
+        function doRequest() {
+            fetch("api/countries")
+                .then(response => response.json())
+                .then(json => showResult(json))
+                .catch(error => showError(error));
+        }
+    </script>
+</head>
+
+<body>
+    <h1>Ajax avec l'API fetch et Mustache</h1>
+    <button onclick="doRequest()">Exécuter la requête AJAX</button><br>
+
+    <div id="tableCountries">...Le résultat va apparaître ici...</div>
+    <hr>
+    <a href='api/countries' target="_blank">Voir les données brutes (JSON)</a><br />
+    Le HTML est généré par le <a href='https://github.com/samskivert/jmustache' target="_blank">
+        moteur de template JMustache
+    </a>
+    <hr>
+
+    <a href="/">Retour au menu</a>
+
+    <!-- Le template Mustache qui sert à formater la liste des pays -->
+    <script id="countriesTemplate" type="text/html">
+            <h2>Liste des pays</h2>
+            <TABLE>
+            <TR><TH>Code</TH><TH>Nom</TH></TR>
+            {{! Pour chaque pays dans le tableau 'countries' }}
+            {{#countries}}
+            <TR><TD>{{code}}</TD><TD>{{name}}</TD></TR>
+            {{/countries}}
+            </TABLE>
+    </script>
+</body>
+
+</html>
