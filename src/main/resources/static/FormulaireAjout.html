@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>API Rest et formulaire</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+
+    <script>
+        /**
+         * Sérialise un formulaire en JSON, pour l'envoyer à l'API
+         * @param form {HTMLFormElement} - le formulaire à sérialiser
+         * @returns {string} - le JSON sérialisé 
+         */ 
+        function formToJson(form) {
+            const result = {};
+            const formData = new FormData(form);
+            for (const [key, value] of formData) {
+                result[key] = value;
+            }
+            return JSON.stringify(result);
+        }
+
+        function showError(error) {
+            document.getElementById("resultat").innerHTML = error;
+        }
+
+        function showResult(result) {
+            document.getElementById("resultat").innerHTML = "Ajouté : " + result._links.country.href;
+        }
+
+        function addCountry(event, form) {
+            event.preventDefault();
+            const options = {
+                method: 'POST',
+                body: formToJson(form),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            };
+            fetch(form.action, options)
+                .then(response => {
+                    if (!response.ok) { // status != 2XX
+                        throw new Error(response.status);
+                    }
+                    return response.json()
+                })
+                .then(json => showResult(json))
+                .catch(error => showError(error));
+        }
+    </script>
+</head>
+
+<body>
+    <h1>Ajout d'un pays</h1>
+    <form method="POST" action="api/countries" id="formulaireAjout" onsubmit="addCountry(event, this)">
+        <label for="code">Code</label>
+        <input type="text" id="code" name="code" />
+        <label for="name">Nom du pays</label>
+        <input type="text" id="name" name="name" /><hr>
+        <input type="submit" />
+    </form>
+    <h2><span id="resultat"></span></h2>
+    <hr>
+    <a href="/">Retour au menu</a>
+</body>
+
+</html>
