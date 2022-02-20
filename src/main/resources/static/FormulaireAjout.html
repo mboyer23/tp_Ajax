@@ -33,6 +33,7 @@
             event.preventDefault();
             const options = {
                 method: 'POST',
+                mode: 'cors',
                 body: formToJson(form),
                 headers: {
                     'Content-Type': 'application/json'
