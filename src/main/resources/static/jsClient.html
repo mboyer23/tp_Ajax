@@ -1,0 +1,20 @@
+<script>
+    // En général, les valeurs proviennent d'un formulaire
+    let country = { code: "XX", name: "testCountry" }
+    let options = { // Options de la requête AJAX
+        method: "POST",
+        // Données envoyées dans le corps de la reqête
+        body: JSON.stringify(country),
+        // En-têtes de requête
+        headers: {
+            // Quel format de données le client envoie
+            'Content-Type': 'application/json',
+            // Quel format est attenu en retour
+            'Accept': 'application/json',
+        }
+    }
+    fetch("rest/saveCountry", options)
+        .then(response => response.json())
+        .then(json => console.log(json))
+        .catch(error => console.error(error));    
+</script>

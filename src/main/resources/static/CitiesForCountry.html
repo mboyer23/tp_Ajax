@@ -37,7 +37,7 @@
             document.getElementById("countries").innerHTML = "Erreur: " + error;
         }
 
-        // Fait l'appel AJAX, puis montre les sélecteur de pays
+        // Charge la liste des pays, puis montre les sélecteur de pays
         function showCountries() {
             fetch("api/countries")
                 .then(response => response.json())
@@ -54,13 +54,21 @@
                 .catch(error => showError(error));
         }
 
+        function deleteCity(href) { // href: url  de la ville à supprimer
+            fetch(href, { // Options de la requête AJAX
+                    method: "DELETE" // On demande au serveur de supprimer la ville
+                })
+                // On re-charge la liste des villes pour le pays sélectionné
+                .then(response => showCities()) // No JSON content
+                .catch(error => showError(error));
+        }
 </script>
 </head>
 
 <body onload="showCountries()">
 
-    <div id="countries">...Le sélecteur de pays ...</div>
-    <div id="cities">...Les villes du pays sélectionné ...</div>
+    <div id="countries">... Le sélecteur de pays ...</div>
+    <div id="cities">... Les villes du pays sélectionné ...</div>
     <hr>
 
     <a href="/">Retour au menu</a>
@@ -80,12 +88,12 @@
     <!-- Le template Mustache qui sert à formatter la table des villes -->
     <script id="citiesTemplate" type="text/html">
         <TABLE>
-            <TR><TH>Nom</TH><TH>Population (en millions)</TH></TR>
+            <TR><TH>Nom</TH><TH>Population (en millions)</TH><TH>Action</TH></TR>
             {{#cities}}
-                <TR><TD>{{name}}</TD><TD>{{population}}</TD></TR>
+                <TR><TD>{{name}}</TD><TD>{{population}}</TD><TD><button onclick='deleteCity("{{_links.self.href}}")'>Supprimer</button></TD></TR>
             {{/cities}}
             {{^cities}}
-                <TR><TD colspan="2">Aucune ville dans ce pays</TD></TR>
+                <TR><TD colspan="3">Aucune ville dans ce pays</TD></TR>
             {{/cities}}            
         </TABLE>
     </script>

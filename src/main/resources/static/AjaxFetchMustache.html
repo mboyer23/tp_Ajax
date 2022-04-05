@@ -10,6 +10,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
 
     <script>
+        // Fonction qui fait l'appel AJAX
+        function doRequest() {
+            fetch("api/countries")
+                .then(response => response.json())
+                .then(json => showResult(json))
+                .catch(error => showError(error));
+        }
+
         // Fonction qui affiche les résultats de la requête
         function showResult(resultJson) {
             // Le code source du template est dans la page
@@ -23,14 +31,6 @@
         // Fonction qui traite les erreurs de la requête
         function showError(error) {
             document.getElementById("tableCountries").innerHTML = "Erreur: " + error;
-        }
-
-        // Fonction qui fait l'appel AJAX
-        function doRequest() {
-            fetch("api/countries")
-                .then(response => response.json())
-                .then(json => showResult(json))
-                .catch(error => showError(error));
         }
     </script>
 </head>
