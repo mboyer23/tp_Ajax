@@ -46,11 +46,19 @@
         moteur de template JMustache
     </a>
     <hr>
-
+<!-- nouve&u-->
     <a href="/">Retour au menu</a>
 
-    <!-- Le template Mustache qui sert à formater la liste des pays -->
     <script id="countriesTemplate" type="text/html">
+        <select onchange="affichecity(this.value)">
+            {{#countries}}
+            <option value="{{_links.cities.href}}">{{name}}</option>
+            {{/countries}}
+        </select>
+    </script>
+
+    <!-- Le template Mustache qui sert à formater la liste des pays -->
+    <!--<script id="countriesTemplate" type="text/html">
             <h2>Liste des pays</h2>
             <TABLE>
             <TR><TH>Code</TH><TH>Nom</TH></TR>
@@ -59,7 +67,41 @@
             <TR><TD>{{code}}</TD><TD>{{name}}</TD></TR>
             {{/countries}}
             </TABLE>
+    </script>-->
+    <script>
+        function affichecity(link) {
+        fetch(link)
+            .then(response => response.json())
+            .then(json => showcity(json))
+         }
+
+    function showcity(json) {
+        let template = document.getElementById('citiesTemplate').innerHTML;
+        let affichage = document.getElementById('afficheCities');
+        let afficheur = Mustache.render(template, json._embedded);
+        affichage.innerHTML = afficheur;
+
+        }
+
     </script>
+
+    <script id="citiesTemplate" type="text/html">
+        <h2>Liste des illes</h2>
+        <TABLE>
+            <TR>
+                <TH>Nom</TH>
+                <TH>Population</TH>
+            </TR>
+            {{! Pour chaque city de la country }}
+            {{#cities}}
+            <TR>
+                <TD>{{name}}</TD>
+                <TD>{{population}}</TD>
+            </TR>
+            {{/cities}}
+        </TABLE>
+    </script>
+
 </body>
 
 </html>
